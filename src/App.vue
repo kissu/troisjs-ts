@@ -1,12 +1,17 @@
 <template>
-  <Renderer ref="rendererC" antialias :orbit-ctrl="{ enableDamping: true }" resize="window">
-    <Camera ref="cameraC" :fov="15" :position="{ x: 0, y: 90, z: 100 }" />
-    <Scene ref="sceneC" background="#111">
-      <PointLight :position="{ y: 10, z: 50 }" color="#fff" :intensity="0.7" />
-      <GltfModel ref="boxC" :rotation="{ y: Math.PI, z: 0 }"
-        :scale="{ x: 0.5, y: 0.5, z: 0.5 }" src="./tron.gltf" @error="onError" />
-    </Scene>
-  </Renderer>
+  <div @click="playMusic">
+    <audio hidden="true" ref="audio">
+      <source src="./synthwave.mp3" type="audio/mpeg">
+    </audio>
+    <Renderer ref="rendererC" antialias :orbit-ctrl="{ enableDamping: true }" resize="window">
+      <Camera ref="cameraC" :fov="15" :position="{ x: 0, y: 90, z: 100 }" />
+      <Scene ref="sceneC" background="#111">
+        <PointLight :position="{ y: 10, z: 50 }" color="#fff" :intensity="0.7" />
+        <GltfModel ref="boxC" :rotation="{ y: Math.PI, z: 0 }" :scale="{ x: 0.5, y: 0.5, z: 0.5 }" src="./tron.gltf"
+          @error="onError" />
+      </Scene>
+    </Renderer>
+  </div>
 </template>
 
 <script setup>
@@ -17,6 +22,7 @@ import { GridHelper, InstancedMesh } from 'three'
 const cameraC = ref()
 const rendererC = ref()
 const sceneC = ref()
+const audio = ref()
 
 let currentDirectionIndex = ref(0)
 
@@ -30,6 +36,10 @@ const getCurrentDirection = (index) => directions.at(index % 4)
 
 const onError = (e) => {
   console.log('error', e)
+}
+
+const playMusic = () => {
+  audio.value.play()
 }
 
 onMounted(() => {
