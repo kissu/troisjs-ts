@@ -24,8 +24,6 @@ const rendererC = ref()
 const sceneC = ref()
 const audio = ref()
 
-let currentDirectionIndex = ref(0)
-
 const directions = [
   { axis: 'X', multiplier: 1, name: 'front' },
   { axis: 'Z', multiplier: 1, name: 'right' },
@@ -62,10 +60,8 @@ onMounted(() => {
     e.preventDefault()
     if (e.key === 'ArrowLeft') {
       sceneC.value.scene.children[2].rotation.y += Math.PI / 2
-      currentDirectionIndex.value--
     } else if (e.key === 'ArrowRight') {
       sceneC.value.scene.children[2].rotation.y -= Math.PI / 2
-      currentDirectionIndex.value++
     }
   });
 })
