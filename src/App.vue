@@ -15,22 +15,22 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { GltfModel, Box, Camera, PhongMaterial, Mesh, PlaneGeometry, PointLight, Renderer, Scene } from 'troisjs'
 import { GridHelper, InstancedMesh } from 'three'
+import { useGamepad } from '@vueuse/core'
 
 const cameraC = ref()
 const rendererC = ref()
 const sceneC = ref()
 const audio = ref()
+const { gamepads } = useGamepad()
 
-const directions = [
-  { axis: 'X', multiplier: 1, name: 'front' },
-  { axis: 'Z', multiplier: 1, name: 'right' },
-  { axis: 'X', multiplier: -1, name: 'bottom' },
-  { axis: 'Z', multiplier: -1, name: 'left' }
-]
-const getCurrentDirection = (index) => directions.at(index % 4)
+watch(() => gamepads, (newPad) => {
+  sceneC.value.scene.children[2].rotation.y -= newPad.value?.[0]?.axes?.[0] * Math.PI / 100
+}, {
+  deep: true,
+})
 
 const onError = (e) => {
   console.log('error', e)
@@ -50,7 +50,7 @@ onMounted(() => {
   scene.add(grid)
 
   renderer.onBeforeRender(() => {
-    scene.children[2]['translateZ'](0.02)
+    scene.children[2]['translateZ'](0.04)
     //! directions
     // +x front -x bottom
     // -z left +z right
