@@ -5,8 +5,8 @@
     </audio>
     <Renderer ref="rendererC" antialias :orbit-ctrl="{ enableDamping: true }" resize="window">
       <Camera ref="cameraC" :fov="15" :position="{ x: 0, y: 90, z: 100 }" />
-      <Scene ref="sceneC" background="#111">
-        <PointLight :position="{ y: 10, z: 50 }" color="#fff" :intensity="0.7" />
+      <Scene ref="sceneC">
+        <PointLight :position="{ y: 10, z: 50 }" color="#fff" :intensity="0.0" />
         <GltfModel ref="boxC" :rotation="{ y: Math.PI, z: 0 }" :scale="{ x: 0.5, y: 0.5, z: 0.5 }" src="./tron.gltf"
           @error="onError" />
       </Scene>
@@ -15,9 +15,9 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue'
-import { GltfModel, Box, Camera, PhongMaterial, Mesh, PlaneGeometry, PointLight, Renderer, Scene } from 'troisjs'
-import { GridHelper, InstancedMesh } from 'three'
+import { ref, onMounted, watch } from 'vue'
+import { GltfModel, Camera, PointLight, Renderer, Scene } from 'troisjs'
+import { GridHelper } from 'three'
 import { useGamepad } from '@vueuse/core'
 
 const cameraC = ref()
@@ -65,7 +65,6 @@ onMounted(() => {
     }
   });
 })
-
 </script>
 
 <style>
