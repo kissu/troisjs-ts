@@ -3,7 +3,6 @@
     <Renderer ref="rendererC" antialias :orbit-ctrl="{ enableDamping: true }" resize="window">
       <Camera ref="cameraC" :fov="15" :position="{ x: 0, y: 90, z: 100 }" />
       <Scene ref="sceneC">
-        <PointLight :position="{ y: 10, z: 50 }" color="#fff" :intensity="0.7" />
         <GltfModel ref="boxC" :rotation="{ y: Math.PI, z: 0 }" :scale="{ x: 0.5, y: 0.5, z: 0.5 }" src="./tron.gltf"
           @error="onError" />
       </Scene>
@@ -15,7 +14,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { GltfModel, Camera, PointLight, Renderer, Scene } from 'troisjs'
+import { GltfModel, Camera, Renderer, Scene } from 'troisjs'
 import { GridHelper } from 'three'
 import * as pose from '@tensorflow-models/pose-detection'
 import '@tensorflow/tfjs-backend-webgl';
@@ -50,7 +49,7 @@ onMounted(async () => {
       width: 320,
       height: 240,
       frameRate: {
-        ideal: 20,
+        ideal: 10,
       }
     }
   }
@@ -72,35 +71,35 @@ onMounted(async () => {
   scene.add(grid)
 
   renderer.onBeforeRender(async () => {
-    scene.children[2]['translateZ'](0.02)
-    //! directions
-    // +x front -x bottom
-    // -z left +z right
-    // const poses = await detector.estimatePoses(webcam.value)
-    // const leftWrist = poses[0].keypoints[9].y
-    // const rightWrist = poses[0].keypoints[10].y
-    // const direction = leftWrist / rightWrist
-    // console.log('d', direction)
-    // switch (true) {
-    //   case (direction > 2):
-    //     console.log('turn left')
-    //     break;
-    //   case (direction < 0.5):
-    //     console.log('turn right')
-    //     break;
-    //   default:
-    //     console.log('straight')
-    //     break;
-    // }
+    scene.children[0]['translateZ'](0.03)
+
+    const poses = await detector.estimatePoses(webcam.value)
+    const leftWrist = poses[0].keypoints[9].y
+    const rightWrist = poses[0].keypoints[10].y
+    const direction = leftWrist / rightWrist
+    console.log('d', direction)
+    switch (true) {
+      case (direction > 2):
+        console.log('turn left')
+        sceneC.value.scene.children[0].rotation.y += Math.PI / 200
+        break;
+        case (direction < 0.5):
+          console.log('turn right')
+          sceneC.value.scene.children[0].rotation.y -= Math.PI / 200
+        break;
+      default:
+        console.log('straight')
+        break;
+    }
   })
 
   document.addEventListener('keydown', (e) => {
     e.preventDefault()
     if (e.key === 'ArrowLeft') {
-      sceneC.value.scene.children[2].rotation.y += Math.PI / 2
+      sceneC.value.scene.children[0].rotation.y += Math.PI / 2
       currentDirectionIndex.value--
     } else if (e.key === 'ArrowRight') {
-      sceneC.value.scene.children[2].rotation.y -= Math.PI / 2
+      sceneC.value.scene.children[0].rotation.y -= Math.PI / 2
       currentDirectionIndex.value++
     }
   });
