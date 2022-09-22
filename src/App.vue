@@ -2,21 +2,21 @@
   <div style="position: relative;">
     <Renderer ref="rendererC" antialias :orbit-ctrl="{ enableDamping: true }" resize="window">
       <Camera ref="cameraC" :fov="15" :position="{ x: 0, y: 90, z: 100 }" />
-      <Scene ref="sceneC" background="#111">
+      <Scene ref="sceneC">
         <PointLight :position="{ y: 10, z: 50 }" color="#fff" :intensity="0.7" />
         <GltfModel ref="boxC" :rotation="{ y: Math.PI, z: 0 }" :scale="{ x: 0.5, y: 0.5, z: 0.5 }" src="./tron.gltf"
           @error="onError" />
       </Scene>
     </Renderer>
-    <video ref="webcam" style="position: absolute; top: 0; right: 0; height: 20vh; width: 20vw;" :srcObject="videoSrc">
-      nice meme</video>
+    <video ref="webcam" style="position: absolute; top: 0; right: 0; height: 20vh; width: 20vw;"
+      :srcObject="videoSrc"></video>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { GltfModel, Box, Camera, PhongMaterial, Mesh, PlaneGeometry, PointLight, Renderer, Scene } from 'troisjs'
-import { GridHelper, InstancedMesh } from 'three'
+import { GltfModel, Camera, PointLight, Renderer, Scene } from 'troisjs'
+import { GridHelper } from 'three'
 import * as pose from '@tensorflow-models/pose-detection'
 import '@tensorflow/tfjs-backend-webgl';
 
@@ -25,21 +25,16 @@ const sleep = async (amount) => await new Promise((resolve) => setTimeout(resolv
 const cameraC = ref()
 const rendererC = ref()
 const sceneC = ref()
+let currentDirectionIndex = ref(0)
 const webcam = ref()
 let videoSrc = ref()
 
-let currentDirectionIndex = ref(0)
-
-const directions = [
-  { axis: 'X', multiplier: 1, name: 'front' },
-  { axis: 'Z', multiplier: 1, name: 'right' },
-  { axis: 'X', multiplier: -1, name: 'bottom' },
-  { axis: 'Z', multiplier: -1, name: 'left' }
-]
-const getCurrentDirection = (index) => directions.at(index % 4)
-
 const onError = (e) => {
   console.log('error', e)
+}
+
+const playMusic = () => {
+  audio.value.play()
 }
 
 onMounted(async () => {
@@ -55,7 +50,7 @@ onMounted(async () => {
       width: 320,
       height: 240,
       frameRate: {
-        ideal: 60,
+        ideal: 20,
       }
     }
   }
@@ -110,7 +105,6 @@ onMounted(async () => {
     }
   });
 })
-
 </script>
 
 <style>
