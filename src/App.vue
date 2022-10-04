@@ -6,6 +6,7 @@
         <GltfModel ref="boxC" :rotation="{ y: Math.PI, z: 0 }" :scale="{ x: 0.5, y: 0.5, z: 0.5 }" src="./tron.gltf"
           @error="onError" />
       </Scene>
+      <PointLight :position="{ y: 10, z: 50 }" color="#fff" :intensity="0.0" />
     </Renderer>
     <video ref="webcam" style="position: absolute; top: 0; right: 0; height: 20vh; width: 20vw;"
       :srcObject="videoSrc"></video>
@@ -14,7 +15,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { GltfModel, Camera, Renderer, Scene } from 'troisjs'
+import { GltfModel, Camera, PointLight, Renderer, Scene } from 'troisjs'
 import { GridHelper } from 'three'
 import * as pose from '@tensorflow-models/pose-detection'
 import '@tensorflow/tfjs-backend-webgl';
@@ -71,7 +72,7 @@ onMounted(async () => {
   scene.add(grid)
 
   renderer.onBeforeRender(async () => {
-    scene.children[0]['translateZ'](0.03)
+    scene.children[0]['translateZ'](0.02)
 
     const poses = await detector.estimatePoses(webcam.value)
     const leftWrist = poses[0].keypoints[9].y
