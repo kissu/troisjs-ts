@@ -31,7 +31,7 @@ onMounted(() => {
   scene.add(grid)
 
   renderer.onBeforeRender(() => {
-    // scene.children[2]['translateZ'](0.02)
+    scene.children[2]['translateZ'](0.02)
   })
 })
 </script>
